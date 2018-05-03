@@ -43,7 +43,7 @@ public class FirmRestService {
     }
 
     @POST
-    
+    @Path("/update")
     @Consumes(value={"text/xml", "application/json"})
     public void updateFirm(String json) {
         ObjectMapper mapper = new ObjectMapper();

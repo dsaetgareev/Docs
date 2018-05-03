@@ -1,5 +1,3 @@
-
-
 class Firm {
     // firmId;
     // name;
@@ -18,15 +16,18 @@ class Firm {
         this._subdivs = subdivs;
     }
 
-    update () {
-        return `id: <input type="text" value=${this._firmId}><br>
-                Наименование: <input type="text" value=${this._name}><br>
-                Физический адрес: <input type="text" value=${this._localAddress}><br>
-                Юридический адрес: <input type="text" value=${this._legalAddress}><br>
-                Руководитель <input type="text" value=${this._director}><br>`;
+    update() {
+        return `<form id="firmForm"><p>
+                id: <input name="firmId" type="text" value=${this.firmId}><br>
+                Наименование: <input name="name" type="text" value=${this.name}><br>
+                Физический адрес: <input name="localAddress" type="text" value=${this.localAddress}><br>
+                Юридический адрес: <input name="legalAddress" type="text" value=${this.legalAddress}><br>
+                Руководитель <input name="director" type="text" value=${this.director}><br></p>
+                </form>                
+                `;
     }
 
-    render () {
+    render() {
         return `id: ${this._firmId} <br>
                 Наименование: ${this._name} <br>
                 Физический адрес: ${this._localAddress}<br>

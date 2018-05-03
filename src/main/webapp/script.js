@@ -24,9 +24,12 @@ require(["dijit/registry",
         "dojo/request",
         "dojo/json",
         "dijit/form/Button",
+        "dojo/dom-form",
+        "dojo/request/xhr",
         "dojo/domReady!"],
     function (registry, BorderContainer, TabContainer, ContentPane, window,
-              Memory, ObjectStoreModel, Tree, dom, Observable, parser, request, json, Button) {
+              Memory, ObjectStoreModel, Tree, dom, Observable, parser, request, json, Button,
+              domForm, xhr) {
 
 
         var appLayout = new BorderContainer({
@@ -166,23 +169,28 @@ require(["dijit/registry",
                         content: object.update,
                         title: object.name
                     });
-                    let button = new Button({
+                    contentTabs.addChild(panel);
+                    let firmForm = dojo.byId("firmForm");
+                    let objFirm = null;
+                    console.log(firmForm);
+                    let button = new Button ({
                         label: "Сохранить",
-                        onClick: function () {
-                            console.log(object);
-                            if (object.type === "firm") {
-                                let newFirm = new Firm(object.id, object.name, object.localAddress,
-                                    object.legalAddress, object.director, object.subdivs);
-                                request.post("docs/firm", {
-                                    handleAs: "text",
-                                    data: newFirm
-                                });
-                                console.log(newFirm);
-                            }
+                        onClick: function() {
+                            objFirm = domForm.toObject("firmForm");
+                            objFirm.subdivs = object.subdivs;
+                            console.log(objFirm);
+                            dojo.xhrPost({
+                                url: "docs/firm/update",
+                                postData: dojo.toJson(objFirm),
+                                handleAs: "json",
+                                headers: {
+                                    "X-Requested-With": null,
+                                    "Content-Type": "application/json"
+                                },
+                            })
                         }
                     });
                     panel.addChild(button);
-                    contentTabs.addChild(panel);
 
                 });
 
