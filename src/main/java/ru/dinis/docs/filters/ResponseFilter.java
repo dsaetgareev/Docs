@@ -8,13 +8,13 @@ import java.io.IOException;
 /**
  * Create by dinis of 30.04.18.
  */
-public class ResponsFilter implements Filter {
+public class ResponseFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponse myResponse = (HttpServletResponse) servletResponse;
-        MyRespons respons = new MyRespons(myResponse);
-        respons.addHeader("Access-Control-Allow-Origin", "*");
+        MyResponse response = new MyResponse(myResponse);
+        response.addHeader("Access-Control-Allow-Origin", "*");
         filterChain.doFilter(servletRequest, myResponse);
     }
 

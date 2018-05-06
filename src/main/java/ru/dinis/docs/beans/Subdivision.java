@@ -35,11 +35,11 @@ public class Subdivision implements Serializable, Comparable<Subdivision>{
     @JsonManagedReference
     private Employee headSubdiv;
 
-    @OneToMany(mappedBy = "subdivision", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "subdivision", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<Employee> employees = new TreeSet<>();
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "firm_id")
     @JsonBackReference
     private Firm firm;

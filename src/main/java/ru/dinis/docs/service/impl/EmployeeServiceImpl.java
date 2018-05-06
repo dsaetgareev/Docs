@@ -103,4 +103,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployee(Employee employee) {
         this.employeeDao.deleteEmployee(employee);
     }
+
+    @Override
+    public void removeEmplById(int id) {
+        Employee employee = this.getEmployeeById(id);
+        this.deleteEmployee(employee);
+    }
 }

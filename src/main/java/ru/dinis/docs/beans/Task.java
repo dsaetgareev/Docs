@@ -27,7 +27,7 @@ public class Task implements Serializable, Comparable<Task> {
     @Column(name = "subject")
     private String subject;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "empl_id")
     @JsonBackReference
     private Employee author;

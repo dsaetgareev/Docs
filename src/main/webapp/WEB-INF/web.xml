@@ -7,7 +7,7 @@
   
   <filter>
     <filter-name>ResponsFilter</filter-name>
-    <filter-class>ru.dinis.docs.filters.ResponsFilter</filter-class>
+    <filter-class>ru.dinis.docs.filters.ResponseFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>ResponsFilter</filter-name>

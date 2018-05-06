@@ -46,4 +46,10 @@ public class FirmServiceImpl implements FirmService {
     public void deleteFirm(Firm firm) {
         this.firmDao.deleteFirm(firm);
     }
+
+    @Override
+    public void removeFirmById(int id) {
+        Firm firm = this.getFirmById(id);
+        this.deleteFirm(firm);
+    }
 }

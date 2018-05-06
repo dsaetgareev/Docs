@@ -37,12 +37,12 @@ public class Employee implements Serializable, Comparable<Employee> {
     @Column(name = "position")
     private String position;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "subdiv_id")
     @JsonBackReference
     private Subdivision subdivision;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.MERGE })
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.ALL })
     @JoinTable(name = "empl_tasks",
     joinColumns = @JoinColumn(name = "empl_id"),
     inverseJoinColumns = @JoinColumn(name = "task_id"))
@@ -123,5 +123,41 @@ public class Employee implements Serializable, Comparable<Employee> {
 
     public void setMyTasks(Set<Task> myTasks) {
         this.myTasks = myTasks;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Employee)) return false;
+
+        Employee employee = (Employee) o;
+
+        if (getEmplId() != employee.getEmplId()) return false;
+        if (getSurname() != null ? !getSurname().equals(employee.getSurname()) : employee.getSurname() != null)
+            return false;
+        if (getFirstName() != null ? !getFirstName().equals(employee.getFirstName()) : employee.getFirstName() != null)
+            return false;
+        if (getPatronymic() != null ? !getPatronymic().equals(employee.getPatronymic()) : employee.getPatronymic() != null)
+            return false;
+        if (getPosition() != null ? !getPosition().equals(employee.getPosition()) : employee.getPosition() != null)
+            return false;
+        if (getSubdivision() != null ? !getSubdivision().equals(employee.getSubdivision()) : employee.getSubdivision() != null)
+            return false;
+        if (getInstructions() != null ? !getInstructions().equals(employee.getInstructions()) : employee.getInstructions() != null)
+            return false;
+        return getMyTasks() != null ? getMyTasks().equals(employee.getMyTasks()) : employee.getMyTasks() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getEmplId();
+        result = 31 * result + (getSurname() != null ? getSurname().hashCode() : 0);
+        result = 31 * result + (getFirstName() != null ? getFirstName().hashCode() : 0);
+        result = 31 * result + (getPatronymic() != null ? getPatronymic().hashCode() : 0);
+        result = 31 * result + (getPosition() != null ? getPosition().hashCode() : 0);
+        result = 31 * result + (getSubdivision() != null ? getSubdivision().hashCode() : 0);
+        result = 31 * result + (getInstructions() != null ? getInstructions().hashCode() : 0);
+        result = 31 * result + (getMyTasks() != null ? getMyTasks().hashCode() : 0);
+        return result;
     }
 }

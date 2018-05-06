@@ -28,11 +28,20 @@ class Firm {
     }
 
     render() {
-        return `id: ${this._firmId} <br>
+        return `<h3><b>Карточка фирмы</b></h3>
                 Наименование: ${this._name} <br>
                 Физический адрес: ${this._localAddress}<br>
                 Юридический адрес: ${this._legalAddress}<br>
                 Руководитель: ${this._director}<br>`;
+    }
+    addForm() {
+        return `<form id="addFirmForm"><p>
+                Наименование: <input name="name" type="text"><br>
+                Физический адрес: <input name="localAddress" type="text"><br>
+                Юридический адрес: <input name="legalAddress" type="text"><br>
+                Руководитель <input name="director" type="text"><br></p>
+                </form>                
+                `;
     }
 
     get firmId() {

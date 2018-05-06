@@ -24,4 +24,8 @@ public interface TaskServaice {
 
     void deleteTask(Task task);
 
+    void updateTask(Task task);
+
+    void removeTaskById(int id);
+
 }

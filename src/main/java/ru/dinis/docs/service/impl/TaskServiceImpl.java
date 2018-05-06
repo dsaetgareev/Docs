@@ -61,4 +61,15 @@ public class TaskServiceImpl implements TaskServaice {
     public void deleteTask(Task task) {
         this.taskDao.deleteTask(task);
     }
+
+    @Override
+    public void updateTask(Task task) {
+        this.taskDao.updateTask(task);
+    }
+
+    @Override
+    public void removeTaskById(int id) {
+        Task task = this.getTaskById(id);
+        this.deleteTask(task);
+    }
 }

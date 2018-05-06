@@ -1,7 +1,10 @@
 package ru.dinis.docs.rest.main;
 
 
+import ru.dinis.docs.rest.service.EmplRestService;
 import ru.dinis.docs.rest.service.FirmRestService;
+import ru.dinis.docs.rest.service.SubdivRestService;
+import ru.dinis.docs.rest.service.TaskRestService;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -16,8 +19,12 @@ public class DocsRestApp extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
-        HashSet<Class<?>> classes = new HashSet<>();
+        Set<Class<?>> classes = new HashSet<>();
         classes.add(FirmRestService.class);
+        classes.add(SubdivRestService.class);
+        classes.add(EmplRestService.class);
+        classes.add(TaskRestService.class);
+
         return classes;
     }
 }

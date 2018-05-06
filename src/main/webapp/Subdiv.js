@@ -1,4 +1,3 @@
-
 class Subdiv {
     // subdivId;
     // name;
@@ -9,28 +8,45 @@ class Subdiv {
     // parent;
 
 
-    constructor(subdivId, name, contactDate, headSubdiv, employees, firm, parent) {
+    constructor(subdivId, name, contactDate, headSubdiv, employees, firm) {
         this._subdivId = subdivId;
         this._name = name;
         this._contactDate = contactDate;
         this._headSubdiv = headSubdiv;
         this._employees = employees;
         this._firm = firm;
-        this._parent = parent;
     }
 
-    update () {
-        return `id <input type="text" value=${this._subdivId}><br>
-                Наименование <input type="text" value=${this._name}><br>
-                Контактные данные <input type="text" value=${this._contactDate}><br>
-                Руководитель <input type="text" value${this._headSubdiv}><br>`;
+    update() {
+        return `<form id="subdivForm">
+                id: <input name="subdivId" type="text" value=${this._subdivId}><br>
+                Наименование: <input name="name" type="text" value=${this._name}><br>
+                Контактные данные: <input name="contactDate" type="text" value=${this._contactDate}><br>
+                Руководитель: <input name="headSubdiv" type="text" value=${this._headSubdiv}><br>
+                </form>`;
     }
 
-    render () {
-        return `id: ${this._subdivId}<br>
+    render() {
+        return `<h3><b>Карточка подразделения</b></h3>
                 Наименование: ${this._name}<br>
                 Контактные данные: ${this._contactDate}<br>
-                Руководитель: ${this._headSubdiv}<br>`;
+                Руководитель: ${this._headSubdiv ? this._headSubdiv.surname : ""}<br>`;
+    }
+
+    addForm() {
+        return `<form id="addSubdivForm">
+                Наименование <input name="name" type="text"><br>
+                Контактные данные <input name="contactDate" type="text"><br>
+                </form>`;
+    }
+
+    forSelect() {
+        let data = [];
+        for (let key of this._employees) {
+            let name = key.surname + " " + key.firstName;
+            data.push({label: name, value: key})
+        }
+        return data;
     }
 
 
@@ -80,13 +96,5 @@ class Subdiv {
 
     set firm(value) {
         this._firm = value;
-    }
-
-    get parent() {
-        return this._parent;
-    }
-
-    set parent(value) {
-        this._parent = value;
     }
 }

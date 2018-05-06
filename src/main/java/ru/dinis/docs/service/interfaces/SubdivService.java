@@ -22,4 +22,6 @@ public interface SubdivService {
 
     void deleteSubdiv(Subdivision subdivision);
 
+    void removeSubdivById(int id);
+
 }

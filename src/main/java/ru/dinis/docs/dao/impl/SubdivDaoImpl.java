@@ -70,6 +70,8 @@ public class SubdivDaoImpl implements SubdivDao {
         Transaction tr = session.beginTransaction();
         try {
             subdivision.setFirm(null);
+            subdivision.setHeadSubdiv(null);
+            this.updateSubdiv(subdivision);
             session.delete(subdivision);
             tr.commit();
         } catch (HibernateException e) {

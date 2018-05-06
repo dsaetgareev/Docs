@@ -38,7 +38,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        SubdivService subdivService = new SubdivServiceImpl();
 
+        Subdivision subdivision = subdivService.getSubdivById(36);
+        subdivService.deleteSubdiv(subdivision);
     }
 
 }

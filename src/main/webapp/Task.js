@@ -21,13 +21,15 @@ class Task {
     }
 
     update () {
-        return `id <input type="text" value=${this.taskId}><br>
-                Предмет поручения <input type="text" value=${this._subject}><br>
-                Автор поручения <input type="text" value=${this._author.fullName()}><br>
-                Срок исполнения <input type="text" value=${this._period}><br>
-                Признак контрольности <input type="text" value=${this._control}><br>
-                Признак исполнения <input type="text" value=${this._execution}><br>
-                Текст поручения <input type="text" value=${this._descr}><br>`
+        return `<form id="taskForm">
+                id <input name="taskId" type="text" value=${this._taskId}><br>
+                Предмет поручения <input name="subject" type="text" value=${this._subject}><br>
+                Автор поручения <input name="author" type="text" value=${this._author.fullName()}><br>
+                Срок исполнения <input name="period" type="date" value=${this._period}><br>
+                Признак контрольности <input name="control" type="checkbox" value=${this._control}><br>
+                Признак исполнения <input name="execution" type="checkbox" value=${this._execution}><br>
+                Текст поручения <input name="descr" type="text" value=${this._descr}><br>
+                </form>`
     }
 
     render () {
@@ -37,7 +39,19 @@ class Task {
                 Срок исполнения: ${this._period}<br>
                 Признак контрольности: ${this._control}<br>
                 Признак исполнения: ${this._execution}<br>
-                Текст поручения: ${this._descr}<br>`
+                Текст поручения: ${this._descr}<br>
+
+                `
+    }
+
+    addForm() {
+        return `<form id="addTaskForm">
+                Предмет поручения <input name="subject" type="text"><br>
+                Срок исполнения <input name="period" type="date"><br>
+                Признак контрольности <input name="control" type="checkbox"><br>
+                Признак исполнения <input name="execution" type="checkbox"><br>
+                Текст поручения <input name="descr" type="text"><br>
+                </form>`
     }
 
     get taskId() {

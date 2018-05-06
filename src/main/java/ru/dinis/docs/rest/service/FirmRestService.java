@@ -22,9 +22,18 @@ public class FirmRestService {
     private FirmService firmService = new FirmServiceImpl();
 
     @GET
+    @Path("/all")
     @Produces("application/json")
-    public Set<Firm> getAllFirm() {
-        return this.firmService.getAllFirm();
+    public String getAllFirm() {
+        Set<Firm> firms = this.firmService.getAllFirm();
+        ObjectMapper mapper = new ObjectMapper();
+        String json = null;
+        try {
+            json = mapper.writeValueAsString(firms);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 
     @GET
@@ -45,18 +54,37 @@ public class FirmRestService {
     @POST
     @Path("/update")
     @Consumes(value={"text/xml", "application/json"})
-    public void updateFirm(String json) {
+    public void updateFirm(String object) {
         ObjectMapper mapper = new ObjectMapper();
         Firm firm = null;
-        Object object = null;
+
         try {
-            object =  mapper.readValue(json, Firm.class);
+            firm =  mapper.readValue(object, Firm.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(object);
+
         this.firmService.updateFirm(firm);
     }
 
+    @GET
+    @Produces("application/json")
+    @Path("/remove/{id}")
+    public void removeFirmById(@PathParam("id") int id) {
+        this.firmService.removeFirmById(id);
+    }
 
+    @POST
+    @Path("/add")
+    @Consumes(value={"text/xml", "application/json"})
+    public void addFirm(String object) {
+        ObjectMapper mapper = new ObjectMapper();
+        Firm firm = null;
+        try {
+            firm = mapper.readValue(object, Firm.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.firmService.addFirm(firm);
+    }
 }

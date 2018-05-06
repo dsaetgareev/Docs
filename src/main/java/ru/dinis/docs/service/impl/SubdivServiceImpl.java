@@ -81,4 +81,10 @@ public class SubdivServiceImpl implements SubdivService {
     public void deleteSubdiv(Subdivision subdivision) {
         this.subdivDao.deleteSubdiv(subdivision);
     }
+
+    @Override
+    public void removeSubdivById(int id) {
+        Subdivision subdivision = this.getSubdivById(id);
+        this.deleteSubdiv(subdivision);
+    }
 }

@@ -22,4 +22,6 @@ public interface FirmService {
 
     void deleteFirm(Firm firm);
 
+    void removeFirmById(int id);
+
 }

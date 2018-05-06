@@ -68,10 +68,14 @@ public class EmployeeDaoImpl implements EmployeeDao {
     public void deleteEmployee(Employee employee) {
         Session session = DBManager.getSessionFactory().openSession();
         Transaction tr = session.beginTransaction();
+        if (employee.getSubdivision().getHeadSubdiv().equals(employee)) {
+            employee.getSubdivision().setHeadSubdiv(null);
+        }
+        employee.setInstructions(null);
+        employee.setMyTasks(null);
+        this.updateEmployee(employee);
+        employee.setSubdivision(null);
         try {
-            employee.setSubdivision(null);
-            employee.setInstructions(null);
-            employee.setMyTasks(null);
             session.delete(employee);
             tr.commit();
         } catch (HibernateException e) {
@@ -81,4 +85,5 @@ public class EmployeeDaoImpl implements EmployeeDao {
             session.close();
         }
     }
+
 }
