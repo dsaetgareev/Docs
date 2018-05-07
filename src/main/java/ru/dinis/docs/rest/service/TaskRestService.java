@@ -1,13 +1,24 @@
 package ru.dinis.docs.rest.service;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.dinis.docs.beans.Employee;
 import ru.dinis.docs.beans.Task;
+import ru.dinis.docs.dto.ConverterDto;
+import ru.dinis.docs.dto.EmplConvDto;
+import ru.dinis.docs.dto.EmployeeDto;
+import ru.dinis.docs.dto.TaskDto;
+import ru.dinis.docs.service.impl.EmployeeServiceImpl;
 import ru.dinis.docs.service.impl.TaskServiceImpl;
+import ru.dinis.docs.service.interfaces.EmployeeService;
 import ru.dinis.docs.service.interfaces.TaskServaice;
 
 import javax.ws.rs.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Create by dinis of 06.05.18.
@@ -16,6 +27,24 @@ import java.io.IOException;
 public class TaskRestService {
 
     private TaskServaice taskServaice = new TaskServiceImpl();
+
+    private EmployeeService employeeService = new EmployeeServiceImpl();
+
+    @GET
+    @Produces("application/json")
+    @Path("/{id}")
+    public String getAllEmpl(@PathParam("id") int id) {
+        ObjectMapper mapper = new ObjectMapper();
+        Employee employee = this.employeeService.getEmployeeById(id);
+        EmployeeDto employeeDto = EmplConvDto.emplToEmplDto(employee);
+        String json = null;
+        try {
+            json = mapper.writeValueAsString(employeeDto);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
 
     @POST
     @Path("/add")

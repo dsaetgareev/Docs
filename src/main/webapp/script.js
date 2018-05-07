@@ -146,9 +146,8 @@ require(["dijit/registry",
                                 parent: subdiv.subdivId
                             });
 
-                            let tasks = employee.myTasks;
 
-                            for (let item of tasks) {
+                            for (let item of empl.myTasks) {
                                 let task = new Task(item.taskId, item.subject, item.author, item.performers,
                                     item.period, item.control, item.execution, item.descr);
                                 task.author = employee;
@@ -164,7 +163,7 @@ require(["dijit/registry",
                                     firm: data,
                                     type: "task",
                                     parent: employee.emplId
-                                })
+                                });
                             }
                         }
                     }
@@ -216,6 +215,7 @@ require(["dijit/registry",
                                         url: `docs/task/remove/${object.id}`,
                                     });
                                 }
+                                location.reload();
 
                             }
                         });
@@ -243,6 +243,7 @@ require(["dijit/registry",
                                                     "Content-Type": "application/json"
                                                 },
                                             });
+                                            location.reload();
                                         }
                                     });
                                     addFrimPanel.addChild(save);
@@ -289,6 +290,7 @@ require(["dijit/registry",
                                                     "Content-Type": "application/json"
                                                 },
                                             });
+                                            location.reload();
                                         }
                                     });
 
@@ -325,7 +327,8 @@ require(["dijit/registry",
                                                     "X-Requested-With": null,
                                                     "Content-Type": "application/json"
                                                 },
-                                            })
+                                            });
+                                            location.reload();
                                         }
                                     });
                                     addEmplForm.addChild(save);
@@ -362,7 +365,8 @@ require(["dijit/registry",
                                                         "X-Requested-With": null,
                                                         "Content-Type": "application/json"
                                                     },
-                                                })
+                                                });
+                                                location.reload();
                                             }
                                         });
                                         addDirectorPanel.addChild(saveDirector);
@@ -374,6 +378,7 @@ require(["dijit/registry",
                         }
 
                         if (object.type === "employee") {
+
                             let task = new Task();
                             let dataSelected = [];
                             let addTaskBtn = new Button({
@@ -389,15 +394,15 @@ require(["dijit/registry",
 
 
                                     let addPerfors = new Button({
-                                       label: "Добавить исполнителя",
-                                       onClick: function () {
-                                           let select = new Select({
-                                               name: "select",
-                                               options: object.dataSelect,
-                                           });
-                                           select.placeAt(addTaskForm).startup();
-                                           dataSelected.push(select.value);
-                                       }
+                                        label: "Добавить исполнителя",
+                                        onClick: function () {
+                                            let select = new Select({
+                                                name: "select",
+                                                options: object.dataSelect,
+                                            });
+                                            select.placeAt(addTaskForm).startup();
+                                            dataSelected.push(select.value);
+                                        }
                                     });
 
                                     addTaskForm.addChild(addPerfors);
@@ -409,12 +414,11 @@ require(["dijit/registry",
                                             let objTask = domForm.toObject("addTaskForm");
                                             objTask.author = object.empl;
                                             objTask.author.myTasks = null;
-                                            // objTask.author.instructions = null;
                                             objTask.author.subdivision = object.subdiv;
                                             objTask.author.subdivision.employees = null;
                                             objTask.author.subdivision.firm = object.firm;
                                             objTask.author.subdivision.firm.subdivs = null;
-                                            objTask.performers = dataSelected;
+                                            // objTask.performers = dataSelected;
                                             objTask.control = null;
                                             objTask.execution = null;
                                             console.log(objTask);
@@ -426,6 +430,7 @@ require(["dijit/registry",
                                                     "Content-Type": "application/json"
                                                 },
                                             });
+                                            location.reload();
                                         }
                                     });
                                     addTaskForm.addChild(saveTask);
@@ -463,6 +468,7 @@ require(["dijit/registry",
                                         "Content-Type": "application/json"
                                     },
                                 });
+
                             }
                             if (object.type === "subdiv") {
                                 let objSubdiv = domForm.toObject("subdivForm");
@@ -524,6 +530,7 @@ require(["dijit/registry",
                                 });
 
                             }
+                            location.reload();
                         }
                     });
                     panel.addChild(button);
@@ -541,5 +548,4 @@ require(["dijit/registry",
         );
 
 
-    })
-;
+    });

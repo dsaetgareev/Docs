@@ -1,13 +1,9 @@
-package ru.dinis.docs.beans;
+package ru.dinis.docs.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.dinis.docs.beans.Subdivision;
+import ru.dinis.docs.beans.Task;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,49 +11,30 @@ import java.util.Set;
 /**
  * Create by dinis of 21.04.18.
  */
-@Entity
-@Table(name = "employee")
-@XmlRootElement
-public class Employee implements Serializable, Comparable<Employee> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "empl_id")
+public class EmployeeDto implements Serializable, Comparable<EmployeeDto> {
+
     private int emplId;
 
-    @Column(name = "surname")
     private String surname;
 
-    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "patronymic")
     private String patronymic;
 
-    @Column(name = "position")
     private String position;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "subdiv_id")
-    @JsonBackReference
     private Subdivision subdivision;
-
-    @ManyToMany
-    @JoinTable(name = "empl_tasks",
-    joinColumns = @JoinColumn(name = "empl_id"),
-    inverseJoinColumns = @JoinColumn(name = "task_id"))
-    @JsonIgnore
+    @JsonProperty(value = "instructions")
     private Set<Task> instructions = new HashSet<>();
-
-    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonProperty(value = "myTasks")
     private Set<Task> myTasks = new HashSet<>();
 
-    public Employee() {
+    public EmployeeDto() {
     }
 
     @Override
-    public int compareTo(Employee o) {
+    public int compareTo(EmployeeDto o) {
         return this.surname.compareTo(o.surname);
     }
 
@@ -128,9 +105,9 @@ public class Employee implements Serializable, Comparable<Employee> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Employee)) return false;
+        if (!(o instanceof ru.dinis.docs.beans.Employee)) return false;
 
-        Employee employee = (Employee) o;
+        ru.dinis.docs.beans.Employee employee = (ru.dinis.docs.beans.Employee) o;
 
         if (getEmplId() != employee.getEmplId()) return false;
         if (getSurname() != null ? !getSurname().equals(employee.getSurname()) : employee.getSurname() != null)

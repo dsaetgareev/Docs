@@ -13,6 +13,8 @@ import ru.dinis.docs.beans.Task;
 import ru.dinis.docs.dao.impl.FirmDaoImpl;
 import ru.dinis.docs.dao.interfaces.FirmDao;
 import ru.dinis.docs.db.DBManager;
+import ru.dinis.docs.dto.EmplConvDto;
+import ru.dinis.docs.dto.EmployeeDto;
 import ru.dinis.docs.rest.service.FirmRestService;
 import ru.dinis.docs.service.impl.EmployeeServiceImpl;
 import ru.dinis.docs.service.impl.FirmServiceImpl;
@@ -38,10 +40,17 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        SubdivService subdivService = new SubdivServiceImpl();
-
-        Subdivision subdivision = subdivService.getSubdivById(36);
-        subdivService.deleteSubdiv(subdivision);
+        EmployeeService employeeService = new EmployeeServiceImpl();
+        ObjectMapper mapper = new ObjectMapper();
+        Employee employee = employeeService.getEmployeeById(781);
+        EmployeeDto employeeDto = EmplConvDto.emplToEmplDto(employee);
+        String json = null;
+        try {
+            json = mapper.writeValueAsString(employeeDto);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        System.out.println(json);
     }
 
 }

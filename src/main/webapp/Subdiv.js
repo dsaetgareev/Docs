@@ -44,6 +44,8 @@ class Subdiv {
         let data = [];
         for (let key of this._employees) {
             let name = key.surname + " " + key.firstName;
+            key.subdivision = null;
+            key.instructions = null;
             data.push({label: name, value: key})
         }
         return data;
