@@ -1,6 +1,7 @@
 package ru.dinis.docs.dao.impl;
 
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -17,6 +18,8 @@ import java.util.TreeSet;
  */
 public class SubdivDaoImpl implements SubdivDao {
 
+    private static Logger logger = Logger.getLogger(SubdivDaoImpl.class);
+
     @Override
     public void addSubdiv(Subdivision subdivision) {
         Session session = DBManager.getSessionFactory().openSession();
@@ -24,8 +27,10 @@ public class SubdivDaoImpl implements SubdivDao {
         try {
             session.saveOrUpdate(subdivision);
             tr.commit();
+            logger.info("Subdiv added!");
         } catch (HibernateException e) {
             tr.rollback();
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         } finally {
             session.close();
@@ -40,8 +45,10 @@ public class SubdivDaoImpl implements SubdivDao {
         try {
             subdivs = session.createQuery(sql).list();
             tr.commit();
+            logger.info("get subdiv by sql!");
         } catch (HibernateException e) {
             tr.rollback();
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         } finally {
             session.close();
@@ -56,8 +63,10 @@ public class SubdivDaoImpl implements SubdivDao {
         try {
             session.merge(subdivision);
             tr.commit();
+            logger.info("subdiv " + subdivision.getSubdivId() + " updated!");
         } catch (HibernateException e) {
             tr.rollback();
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         } finally {
             session.close();
@@ -74,6 +83,7 @@ public class SubdivDaoImpl implements SubdivDao {
             this.updateSubdiv(subdivision);
             session.delete(subdivision);
             tr.commit();
+            logger.info("subdiv " + subdivision.getSubdivId() + " deleted");
         } catch (HibernateException e) {
             tr.rollback();
             e.printStackTrace();

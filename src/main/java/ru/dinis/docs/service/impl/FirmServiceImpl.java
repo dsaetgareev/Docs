@@ -1,6 +1,7 @@
 package ru.dinis.docs.service.impl;
 
 
+import org.apache.log4j.Logger;
 import ru.dinis.docs.beans.Firm;
 import ru.dinis.docs.dao.impl.FirmDaoImpl;
 import ru.dinis.docs.dao.interfaces.FirmDao;
@@ -13,6 +14,8 @@ import java.util.Set;
  * Create by dinis of 22.04.18.
  */
 public class FirmServiceImpl implements FirmService {
+
+    private static Logger logger = Logger.getLogger(FirmServiceImpl.class);
 
     private FirmDao firmDao = new FirmDaoImpl();
 

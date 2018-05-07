@@ -1,6 +1,7 @@
 package ru.dinis.docs.dao.impl;
 
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -17,6 +18,8 @@ import java.util.TreeSet;
  */
 public class TaskDaoImpl implements TaskDao {
 
+    private static Logger logger = Logger.getLogger(TaskDaoImpl.class);
+
     @Override
     public void addTask(Task task) {
         Session session = DBManager.getSessionFactory().openSession();
@@ -24,8 +27,10 @@ public class TaskDaoImpl implements TaskDao {
         try {
             session.saveOrUpdate(task);
             tr.commit();
+            logger.info("Task added");
         } catch (HibernateException e) {
             tr.rollback();
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         } finally {
             session.close();
@@ -40,8 +45,10 @@ public class TaskDaoImpl implements TaskDao {
         try {
             tasks = session.createQuery(sql).list();
             tr.commit();
+            logger.info("Task get by sql!");
         } catch (HibernateException e) {
             tr.rollback();
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         } finally {
             session.close();
@@ -56,8 +63,10 @@ public class TaskDaoImpl implements TaskDao {
         try {
             session.merge(task);
             tr.commit();
+            logger.info("Task " + task.getTaskId() + " updated");
         } catch (HibernateException e) {
             tr.rollback();
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         } finally {
             session.close();
@@ -73,8 +82,10 @@ public class TaskDaoImpl implements TaskDao {
             task.setPerformers(null);
             session.delete(task);
             tr.commit();
+            logger.info("Task " + task.getTaskId() + " deleted");
         } catch (HibernateException e) {
             tr.rollback();
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         } finally {
             session.close();

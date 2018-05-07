@@ -1,6 +1,7 @@
 package ru.dinis.docs.dao.impl;
 
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -17,6 +18,8 @@ import java.util.TreeSet;
  */
 public class EmployeeDaoImpl implements EmployeeDao {
 
+    private static Logger logger = Logger.getLogger(EmployeeDaoImpl.class);
+
     @Override
     public void addEmployee(Employee employee) {
         Session session = DBManager.getSessionFactory().openSession();
@@ -24,8 +27,10 @@ public class EmployeeDaoImpl implements EmployeeDao {
         try {
             session.saveOrUpdate(employee);
             tr.commit();
+            logger.info("Employee added!");
         } catch (HibernateException e) {
             tr.rollback();
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         } finally {
             session.close();
@@ -40,8 +45,10 @@ public class EmployeeDaoImpl implements EmployeeDao {
         try {
             employees = session.createQuery(sql).list();
             tr.commit();
+            logger.info("Employee get by sql!");
         } catch (HibernateException e) {
             tr.rollback();
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         } finally {
             session.close();
@@ -56,8 +63,10 @@ public class EmployeeDaoImpl implements EmployeeDao {
         try {
             session.merge(employee);
             tr.commit();
+            logger.info("Employee " + employee.getEmplId() + "updated!");
         } catch (HibernateException e) {
             tr.rollback();
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         } finally {
             session.close();
@@ -78,8 +87,10 @@ public class EmployeeDaoImpl implements EmployeeDao {
         try {
             session.delete(employee);
             tr.commit();
+            logger.info("Emloyee " + employee.getEmplId() + " deleted");
         } catch (HibernateException e) {
             tr.rollback();
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         } finally {
             session.close();

@@ -48,13 +48,13 @@ require(["dijit/registry",
         var top = new ContentPane({
             region: "top",
             "class": "edgePanel",
-            content: "Тут будет header и кнопки"
+            content: ""
         });
 
         var left = new ContentPane({
             region: "left",
             id: "leftCol", "class": "edgePanel",
-            content: "Тут будет <em>дерево</em> задач",
+            content: "",
             splitter: true
         });
 
