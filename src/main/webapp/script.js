@@ -117,7 +117,7 @@ require(["dijit/registry",
                             employees: subdiv.employees,
                             subdiv: key,
                             firm: data,
-                            parent: firm.firmId
+                            parent: data.firmId
                         });
 
                         let employees = subdiv.employees;
@@ -130,7 +130,7 @@ require(["dijit/registry",
                                 empl.myTasks);
 
                             dataStore.push({
-                                id: employee.emplId,
+                                id: empl.emplId,
                                 surname: empl.surname,
                                 firstName: empl.firstName,
                                 patronymic: empl.patronymic,
@@ -146,8 +146,9 @@ require(["dijit/registry",
                                 parent: subdiv.subdivId
                             });
 
+                            let tasks = employee.myTasks;
 
-                            for (let item of empl.myTasks) {
+                            for (let item of tasks) {
                                 let task = new Task(item.taskId, item.subject, item.author, item.performers,
                                     item.period, item.control, item.execution, item.descr);
                                 task.author = employee;
@@ -162,8 +163,8 @@ require(["dijit/registry",
                                     subdiv: key,
                                     firm: data,
                                     type: "task",
-                                    parent: employee.emplId
-                                });
+                                    parent: empl.emplId
+                                })
                             }
                         }
                     }
@@ -378,7 +379,6 @@ require(["dijit/registry",
                         }
 
                         if (object.type === "employee") {
-
                             let task = new Task();
                             let dataSelected = [];
                             let addTaskBtn = new Button({
@@ -414,11 +414,12 @@ require(["dijit/registry",
                                             let objTask = domForm.toObject("addTaskForm");
                                             objTask.author = object.empl;
                                             objTask.author.myTasks = null;
+                                            // objTask.author.instructions = null;
                                             objTask.author.subdivision = object.subdiv;
                                             objTask.author.subdivision.employees = null;
                                             objTask.author.subdivision.firm = object.firm;
                                             objTask.author.subdivision.firm.subdivs = null;
-                                            // objTask.performers = dataSelected;
+                                            objTask.performers = dataSelected;
                                             objTask.control = null;
                                             objTask.execution = null;
                                             console.log(objTask);
@@ -468,7 +469,6 @@ require(["dijit/registry",
                                         "Content-Type": "application/json"
                                     },
                                 });
-
                             }
                             if (object.type === "subdiv") {
                                 let objSubdiv = domForm.toObject("subdivForm");
@@ -548,4 +548,5 @@ require(["dijit/registry",
         );
 
 
-    });
+    })
+;

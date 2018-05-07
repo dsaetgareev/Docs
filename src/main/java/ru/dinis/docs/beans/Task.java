@@ -32,7 +32,7 @@ public class Task implements Serializable, Comparable<Task> {
     @JsonBackReference
     private Employee author;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.ALL })
+    @ManyToMany
     @JoinTable(name = "empl_tasks",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "empl_id"))

@@ -68,7 +68,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
     public void deleteEmployee(Employee employee) {
         Session session = DBManager.getSessionFactory().openSession();
         Transaction tr = session.beginTransaction();
-        if (employee.getSubdivision().getHeadSubdiv().equals(employee)) {
+        if (employee.getSubdivision().getHeadSubdiv() != null && employee.getSubdivision().getHeadSubdiv().equals(employee)) {
             employee.getSubdivision().setHeadSubdiv(null);
         }
         employee.setInstructions(null);
