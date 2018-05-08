@@ -442,12 +442,24 @@ require(["dijit/registry",
                                     let addPerfors = new Button({
                                         label: "Добавить исполнителя",
                                         onClick: function () {
+
                                             let select = new Select({
                                                 name: "select",
                                                 options: object.dataSelect,
                                             });
-                                            select.placeAt(addTaskForm).startup();
-                                            dataSelected.push(select.value);
+                                            let selectPane = new ContentPane({
+                                               closable: true,
+                                            });
+                                            select.placeAt(selectPane).startup();
+                                            let saveSelBtn = new Button({
+                                                label: "Сохранить исполнителя",
+                                                onClick: function () {
+                                                    dataSelected.push(select.value);
+                                                }
+                                            });
+                                            selectPane.addChild(saveSelBtn);
+                                            addTaskForm.addChild(selectPane);
+
                                         }
                                     });
 
@@ -501,19 +513,19 @@ require(["dijit/registry",
 
                                     tStore.push({
                                         id: "tasks",
-                                        name: "Задачи",
+                                        name: `Задачи ${employee.surname}`,
                                         type: "tasks",
                                     });
 
                                     tStore.push({
                                         id: "myTasks",
-                                        name: "myTasks",
+                                        name: "Мои задачи",
                                         type: "myTasks",
                                         parent: "tasks",
                                     });
                                     tStore.push({
                                         id: "meTasks",
-                                        name: "meTasks",
+                                        name: "Задачи мне",
                                         type: "meTasks",
                                         parent: "tasks",
                                     });
