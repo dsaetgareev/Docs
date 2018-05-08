@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.dinis.docs.beans.Subdivision;
 import ru.dinis.docs.beans.Task;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,19 +12,19 @@ import java.util.Set;
 /**
  * Create by dinis of 21.04.18.
  */
-
+@XmlRootElement
 public class EmployeeDto implements Serializable, Comparable<EmployeeDto> {
-
+    @JsonProperty(value = "emplId")
     private int emplId;
-
+    @JsonProperty(value = "surname")
     private String surname;
-
+    @JsonProperty(value = "firstName")
     private String firstName;
-
+    @JsonProperty(value = "patronymic")
     private String patronymic;
-
+    @JsonProperty(value = "position")
     private String position;
-
+    @JsonProperty(value = "subdivision")
     private Subdivision subdivision;
     @JsonProperty(value = "instructions")
     private Set<Task> instructions = new HashSet<>();

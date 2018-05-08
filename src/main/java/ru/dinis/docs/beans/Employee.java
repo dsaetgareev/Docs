@@ -42,7 +42,7 @@ public class Employee implements Serializable, Comparable<Employee> {
     @JsonBackReference
     private Subdivision subdivision;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.ALL })
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.ALL })
     @JoinTable(name = "empl_tasks",
             joinColumns = @JoinColumn(name = "empl_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id"))

@@ -27,10 +27,12 @@ require(["dijit/registry",
         "dojo/dom-form",
         "dojo/request/xhr",
         "dijit/form/Select",
+        "dojo/aspect",
+        "dijit/tree/dndSource",
         "dojo/domReady!"],
     function (registry, BorderContainer, TabContainer, ContentPane, window,
               Memory, ObjectStoreModel, Tree, dom, Observable, parser, request, json, Button,
-              domForm, xhr, Select) {
+              domForm, xhr, Select, aspect, dndSource) {
 
 
         var appLayout = new BorderContainer({
@@ -84,7 +86,9 @@ require(["dijit/registry",
                     type: "firms",
 
                 });
-
+                arrayFirm.sort(function(a, b) {
+                    return a.name - b.name;
+                });
                 for (let data of arrayFirm) {
 
                     let firm = new Firm(data.firmId, data.name, data.localAddress,
@@ -103,6 +107,9 @@ require(["dijit/registry",
                     });
 
                     let subdivs = data.subdivs;
+                    subdivs.sort(function(a, b) {
+                        return a.name - b.name;
+                    });
                     for (let key of subdivs) {
 
                         let subdiv = new Subdiv(key.subdivId, key.name,
@@ -121,7 +128,9 @@ require(["dijit/registry",
                         });
 
                         let employees = subdiv.employees;
-
+                        employees.sort(function(a, b) {
+                            return a.surname - b.surname;
+                        });
                         for (let empl of employees) {
                             let employee = new Employee(empl.emplId,
                                 empl.surname, empl.firstName,
@@ -177,6 +186,42 @@ require(["dijit/registry",
                     }
                 });
 
+                aspect.around(myStore, "put", function (originalPut) {
+
+                    return function (obj, options) {
+                        if (obj.type === "firm" && options && options.parent) {
+                            // obj.parent = options.parent.id;
+                            for (let sub of obj.subdivs) {
+                                sub.firm = null;
+                                sub.employees = null;
+                                options.parent.firm.subdivs.push(sub);
+                            }
+                            for (let subd of options.parent.firm.subdivs) {
+                                subd.employees = null;
+                            }
+                            console.log(options.parent.firm);
+                            
+                            dojo.xhrPost({
+                                url: "docs/firm/update",
+                                postData: json.stringify(options.parent.firm),
+                                handleAs: "json",
+                                headers: {
+                                    "X-Requested-With": null,
+                                    "Content-Type": "application/json"
+                                },
+                            });
+                            //dojo.xhrGet({
+                              //  url: `docs/firm/remove/${obj.id}`,
+                                //sync: true,
+                            //});
+
+                        }
+                        location.reload();
+                        return originalPut.call(myStore, obj, options);
+                    }
+
+                });
+
                 myStore = new Observable(myStore);
 
                 let myModel = new ObjectStoreModel({
@@ -187,6 +232,7 @@ require(["dijit/registry",
                 let tree = new Tree({
                     model: myModel,
                     openOnClick: false,
+                    dndController: dndSource,
                     onClick: function (object) {
                         let rendPanel = new ContentPane({
                             closable: true,
@@ -438,6 +484,99 @@ require(["dijit/registry",
                                 }
                             });
                             rendPanel.addChild(addTaskBtn);
+
+                            dojo.xhrGet({
+                                url: `docs/task/empl/${object.id}`,
+                                handleAs: "json",
+                                headers: {
+                                    "X-Requested-With": null,
+                                    "Content-Type": "application/json"
+                                },
+
+                                load:function (response) {
+                                    console.log(response);
+                                    let employee = response;
+                                    console.log(employee);
+                                    let tStore = [];
+
+                                    tStore.push({
+                                        id: "tasks",
+                                        name: "Задачи",
+                                        type: "tasks",
+                                    });
+
+                                    tStore.push({
+                                        id: "myTasks",
+                                        name: "myTasks",
+                                        type: "myTasks",
+                                        parent: "tasks",
+                                    });
+                                    tStore.push({
+                                        id: "meTasks",
+                                        name: "meTasks",
+                                        type: "meTasks",
+                                        parent: "tasks",
+                                    });
+                                    let tmpEmpl = new Employee(employee.emplId, employee.surname, employee.firstName,
+                                     employee.patronymic, employee.position, employee.subdivision, employee.instructions,
+                                     employee.myTasks);
+                                    for (let myTaskss of employee.myTasks) {
+                                        let mTask = new Task(myTaskss.taskId, myTaskss.subject, myTaskss.author, myTaskss.performers,
+                                            myTaskss.period, myTaskss.control, myTaskss.execution, myTaskss.descr);
+                                        mTask.author = tmpEmpl;
+                                        tStore.push({
+                                            id: myTaskss.taskId,
+                                            name: myTaskss.taskId,
+                                            type: "taskMy",
+                                            render: mTask.render(),
+                                            parent: "myTasks",
+                                        });
+                                    }
+                                    for (let meTaskss of employee.instructions) {
+                                        let meTsk = new Task(meTaskss.taskId, meTaskss.subject, meTaskss.author, meTaskss.performers,
+                                            meTaskss.period, meTaskss.control, meTaskss.execution, meTaskss.descr);
+                                        meTsk.author = tmpEmpl;
+                                        tStore.push({
+                                            id: meTaskss.taskId,
+                                            name: meTaskss.taskId,
+                                            type: "taskMe",
+                                            render: meTsk.render(),
+                                            parent: "meTasks"
+                                        });
+                                    }
+
+                                    let taskStore = new Memory({
+                                        data: tStore,
+                                        getChildren: function (object) {
+                                            return this.query({parent: object.id});
+                                        }
+                                    });
+
+                                    taskStore = new Observable(taskStore);
+
+                                    let taskModel = new ObjectStoreModel({
+                                        store: taskStore,
+                                        query: {id: "tasks"}
+                                    });
+
+                                    let taskTree = new Tree({
+                                        model: taskModel,
+                                        openOnClick: false,
+                                        onClick: function (object) {
+                                            let taskPanel = new ContentPane({
+                                                closable: true,
+                                                content: object.render,
+                                                title: `${object.name} ${object.type}`,
+                                            });
+                                            contentTabs.addChild(taskPanel);
+                                        }
+                                    });
+                                    taskTree.placeAt(dom.byId(leftCol));
+                                    taskTree.startup();
+                                }
+                            });
+
+
                         }
                         rendPanel.addChild(removeBtn);
                         contentTabs.addChild(rendPanel);

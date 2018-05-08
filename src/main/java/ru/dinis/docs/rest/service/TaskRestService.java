@@ -3,6 +3,7 @@ package ru.dinis.docs.rest.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.Logger;
 import ru.dinis.docs.beans.Employee;
 import ru.dinis.docs.beans.Task;
 import ru.dinis.docs.dto.ConverterDto;
@@ -26,23 +27,28 @@ import java.util.Set;
 @Path(value = "/task")
 public class TaskRestService {
 
+    private static Logger logger = Logger.getLogger(TaskRestService.class);
+
     private TaskServaice taskServaice = new TaskServiceImpl();
 
     private EmployeeService employeeService = new EmployeeServiceImpl();
 
     @GET
     @Produces("application/json")
-    @Path("/{id}")
+    @Path("empl/{id}")
     public String getAllEmpl(@PathParam("id") int id) {
         ObjectMapper mapper = new ObjectMapper();
         Employee employee = this.employeeService.getEmployeeById(id);
+
         EmployeeDto employeeDto = EmplConvDto.emplToEmplDto(employee);
+        employeeDto.setSubdivision(null);
         String json = null;
         try {
             json = mapper.writeValueAsString(employeeDto);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        logger.info(json);
         return json;
     }
 

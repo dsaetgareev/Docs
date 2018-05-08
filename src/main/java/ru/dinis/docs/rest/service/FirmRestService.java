@@ -33,6 +33,7 @@ public class FirmRestService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        System.out.println(json);
         return json;
     }
 
