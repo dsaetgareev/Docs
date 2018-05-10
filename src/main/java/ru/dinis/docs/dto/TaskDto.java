@@ -35,6 +35,10 @@ public class TaskDto {
             return this.taskId > o.taskId ? 1 : -1;
         }
 
+        public String fullName() {
+            return this.author.getSurname() + " " + this.author.getFirstName() + " " + this.author.getPatronymic();
+        }
+
         public int getTaskId() {
             return taskId;
         }

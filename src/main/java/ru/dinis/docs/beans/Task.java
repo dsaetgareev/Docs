@@ -27,7 +27,7 @@ public class Task implements Serializable, Comparable<Task> {
     @Column(name = "subject")
     private String subject;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "empl_id")
     @JsonBackReference
     private Employee author;
@@ -53,6 +53,16 @@ public class Task implements Serializable, Comparable<Task> {
     private String descr;
 
     public Task() {
+    }
+
+    public Task(Task task) {
+        this.subject = task.subject;
+        this.author = task.author;
+        this.performers = task.performers;
+        this.period = task.period;
+        this.control = task.control;
+        this.execution = task.execution;
+        this.descr = task.descr;
     }
 
     @Override

@@ -46,7 +46,6 @@ public class Employee implements Serializable, Comparable<Employee> {
     @JoinTable(name = "empl_tasks",
             joinColumns = @JoinColumn(name = "empl_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id"))
-    @JsonIgnore
     private Set<Task> instructions = new HashSet<>();
 
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

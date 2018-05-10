@@ -33,7 +33,7 @@ class Task {
     }
 
     render () {
-        return `id: ${this.__taskId}<br>
+        return `<h3><b>Карточка сотрудника</b></h3><br>
                 Предмет поручения: ${this._subject}<br>
                 Автор поручения: ${this._author.fullName()}<br>
                 Срок исполнения: ${this._period}<br>

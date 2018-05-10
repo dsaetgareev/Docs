@@ -29,10 +29,11 @@ require(["dijit/registry",
         "dijit/form/Select",
         "dojo/aspect",
         "dijit/tree/dndSource",
+        "dojo/on",
         "dojo/domReady!"],
     function (registry, BorderContainer, TabContainer, ContentPane, window,
               Memory, ObjectStoreModel, Tree, dom, Observable, parser, request, json, Button,
-              domForm, xhr, Select, aspect, dndSource) {
+              domForm, xhr, Select, aspect, dndSource,on) {
 
 
         var appLayout = new BorderContainer({
@@ -86,7 +87,7 @@ require(["dijit/registry",
                     type: "firms",
 
                 });
-                arrayFirm.sort(function(a, b) {
+                arrayFirm.sort(function (a, b) {
                     return a.name - b.name;
                 });
                 for (let data of arrayFirm) {
@@ -107,7 +108,7 @@ require(["dijit/registry",
                     });
 
                     let subdivs = data.subdivs;
-                    subdivs.sort(function(a, b) {
+                    subdivs.sort(function (a, b) {
                         return a.name - b.name;
                     });
                     for (let key of subdivs) {
@@ -128,7 +129,7 @@ require(["dijit/registry",
                         });
 
                         let employees = subdiv.employees;
-                        employees.sort(function(a, b) {
+                        employees.sort(function (a, b) {
                             return a.surname - b.surname;
                         });
                         for (let empl of employees) {
@@ -200,7 +201,7 @@ require(["dijit/registry",
                                 subd.employees = null;
                             }
                             console.log(options.parent.firm);
-                            
+
                             dojo.xhrPost({
                                 url: "docs/firm/update",
                                 postData: json.stringify(options.parent.firm),
@@ -211,8 +212,8 @@ require(["dijit/registry",
                                 },
                             });
                             //dojo.xhrGet({
-                              //  url: `docs/firm/remove/${obj.id}`,
-                                //sync: true,
+                            //  url: `docs/firm/remove/${obj.id}`,
+                            //sync: true,
                             //});
 
                         }
@@ -438,23 +439,83 @@ require(["dijit/registry",
                                     let addTaskForm = new ContentPane(paneObj);
                                     contentTabs.addChild(addTaskForm);
 
+                                    let addPerforsOuter = new Button({
+                                        label: "Добавить исполнителя с другой организации",
+                                        onClick: function () {
+                                            let arrFirms = [];
+                                            for (let org of arrayFirm) {
+                                                arrFirms.push({label: org.name, value: org});
+                                            }
+                                            let selectcFirm = new Select({
+                                                name: "selFirm",
+                                                options: arrFirms,
+                                            });
+                                            let selectPane = new ContentPane({});
+                                            selectcFirm.placeAt(selectPane).startup();
+                                            on(selectcFirm, 'dblclick', function () {
+                                                let arrSubdiv = [];
+                                                for (let sub of selectcFirm.value.subdivs) {
+                                                    arrSubdiv.push({label: sub.name, value: sub});
+                                                }
+                                                console.log(arrSubdiv);
+                                                let selectSubdiv = new Select({
+                                                    name: "selSubdiv",
+                                                    options: arrSubdiv,
+                                                });
+                                                selectSubdiv.placeAt(selectPane).startup();
+
+                                                selectSubdiv.on("dblclick", function () {
+                                                    let arrEmpl = [];
+                                                    for (let emplSelect of selectSubdiv.value.employees) {
+                                                        arrEmpl.push({
+                                                            label: `${emplSelect.surname} ${emplSelect.firstName} ${emplSelect.patronymic}`,
+                                                            value: emplSelect,
+                                                        })
+                                                    }
+                                                    let selectEmpl = new Select({
+                                                        name: "selectEmpl",
+                                                        options: arrEmpl,
+                                                    });
+                                                    selectEmpl.placeAt(selectPane).startup();
+
+                                                    let saveSelBtn = new Button({
+                                                        label: "Сохранить исполнителя",
+                                                        onClick: function () {
+                                                            dataSelected.push(selectEmpl.value);
+
+                                                        }
+                                                    });
+                                                    selectPane.addChild(saveSelBtn);
+                                                });
+                                            });
+                                            addTaskForm.addChild(selectPane);
+                                        }
+                                    });
+
 
                                     let addPerfors = new Button({
                                         label: "Добавить исполнителя",
                                         onClick: function () {
-
+                                            let arrSel = [];
+                                            arrSel = object.dataSelect;
+                                            arrSel = arrSel.filter(function (item) {
+                                                return item.emplId !== object.empl.emplId;
+                                            });
                                             let select = new Select({
                                                 name: "select",
-                                                options: object.dataSelect,
+                                                options: arrSel,
                                             });
                                             let selectPane = new ContentPane({
-                                               closable: true,
+                                                closable: true,
                                             });
                                             select.placeAt(selectPane).startup();
                                             let saveSelBtn = new Button({
                                                 label: "Сохранить исполнителя",
                                                 onClick: function () {
                                                     dataSelected.push(select.value);
+                                                    arrSel = arrSel.filter(function (item) {
+                                                        return item !== select.value;
+                                                    });
                                                 }
                                             });
                                             selectPane.addChild(saveSelBtn);
@@ -463,6 +524,7 @@ require(["dijit/registry",
                                         }
                                     });
 
+                                    addTaskForm.addChild(addPerforsOuter);
                                     addTaskForm.addChild(addPerfors);
 
 
@@ -505,7 +567,7 @@ require(["dijit/registry",
                                     "Content-Type": "application/json"
                                 },
 
-                                load:function (response) {
+                                load: function (response) {
                                     console.log(response);
                                     let employee = response;
                                     console.log(employee);
@@ -530,8 +592,9 @@ require(["dijit/registry",
                                         parent: "tasks",
                                     });
                                     let tmpEmpl = new Employee(employee.emplId, employee.surname, employee.firstName,
-                                     employee.patronymic, employee.position, employee.subdivision, employee.instructions,
-                                     employee.myTasks);
+                                        employee.patronymic, employee.position, employee.subdivision, employee.instructions,
+                                        employee.myTasks);
+
                                     for (let myTaskss of employee.myTasks) {
                                         let mTask = new Task(myTaskss.taskId, myTaskss.subject, myTaskss.author, myTaskss.performers,
                                             myTaskss.period, myTaskss.control, myTaskss.execution, myTaskss.descr);
@@ -544,47 +607,67 @@ require(["dijit/registry",
                                             parent: "myTasks",
                                         });
                                     }
-                                    for (let meTaskss of employee.instructions) {
-                                        let meTsk = new Task(meTaskss.taskId, meTaskss.subject, meTaskss.author, meTaskss.performers,
-                                            meTaskss.period, meTaskss.control, meTaskss.execution, meTaskss.descr);
-                                        meTsk.author = tmpEmpl;
-                                        tStore.push({
-                                            id: meTaskss.taskId,
-                                            name: meTaskss.taskId,
-                                            type: "taskMe",
-                                            render: meTsk.render(),
-                                            parent: "meTasks"
-                                        });
-                                    }
 
-                                    let taskStore = new Memory({
-                                        data: tStore,
-                                        getChildren: function (object) {
-                                            return this.query({parent: object.id});
-                                        }
-                                    });
+                                    dojo.xhrGet({
+                                        url: `docs/task/empl/author/${object.id}`,
+                                        handleAs: "json",
+                                        headers: {
+                                            "X-Requested-With": null,
+                                            "Content-Type": "application/json"
+                                        },
 
-                                    taskStore = new Observable(taskStore);
+                                        load: function (data) {
+                                            console.log(data);
+                                            let tasks = data;
+                                            console.log(tasks);
 
-                                    let taskModel = new ObjectStoreModel({
-                                        store: taskStore,
-                                        query: {id: "tasks"}
-                                    });
+                                            for (let meTaskss of tasks) {
+                                                let authorEmpl = new Employee(meTaskss.author.emplId, meTaskss.author.surname, meTaskss.author.firstName,
+                                                    meTaskss.author.patronymic, meTaskss.author.position, meTaskss.author.subdivision, meTaskss.author.instructions,
+                                                    meTaskss.author.myTasks);
+                                                console.log(meTaskss.author);
+                                                let meTsk = new Task(meTaskss.taskId, meTaskss.subject, meTaskss.author, meTaskss.performers,
+                                                    meTaskss.period, meTaskss.control, meTaskss.execution, meTaskss.descr);
+                                                meTsk.author = authorEmpl;
+                                                tStore.push({
+                                                    id: meTaskss.taskId,
+                                                    name: meTaskss.taskId,
+                                                    type: "taskMe",
+                                                    render: meTsk.render(),
+                                                    parent: "meTasks"
+                                                });
+                                            }
 
-                                    let taskTree = new Tree({
-                                        model: taskModel,
-                                        openOnClick: false,
-                                        onClick: function (object) {
-                                            let taskPanel = new ContentPane({
-                                                closable: true,
-                                                content: object.render,
-                                                title: `${object.name} ${object.type}`,
+                                            let taskStore = new Memory({
+                                                data: tStore,
+                                                getChildren: function (object) {
+                                                    return this.query({parent: object.id});
+                                                }
                                             });
-                                            contentTabs.addChild(taskPanel);
+
+                                            taskStore = new Observable(taskStore);
+
+                                            let taskModel = new ObjectStoreModel({
+                                                store: taskStore,
+                                                query: {id: "tasks"}
+                                            });
+
+                                            let taskTree = new Tree({
+                                                model: taskModel,
+                                                openOnClick: false,
+                                                onClick: function (object) {
+                                                    let taskPanel = new ContentPane({
+                                                        closable: true,
+                                                        content: object.render,
+                                                        title: `${object.name} ${object.type}`,
+                                                    });
+                                                    contentTabs.addChild(taskPanel);
+                                                }
+                                            });
+                                            taskTree.placeAt(dom.byId(leftCol));
+                                            taskTree.startup();
                                         }
                                     });
-                                    taskTree.placeAt(dom.byId(leftCol));
-                                    taskTree.startup();
                                 }
                             });
 

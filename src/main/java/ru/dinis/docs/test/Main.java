@@ -13,8 +13,10 @@ import ru.dinis.docs.beans.Task;
 import ru.dinis.docs.dao.impl.FirmDaoImpl;
 import ru.dinis.docs.dao.interfaces.FirmDao;
 import ru.dinis.docs.db.DBManager;
+import ru.dinis.docs.dto.ConverterDto;
 import ru.dinis.docs.dto.EmplConvDto;
 import ru.dinis.docs.dto.EmployeeDto;
+import ru.dinis.docs.dto.TaskDto;
 import ru.dinis.docs.rest.service.FirmRestService;
 import ru.dinis.docs.service.impl.EmployeeServiceImpl;
 import ru.dinis.docs.service.impl.FirmServiceImpl;
@@ -25,6 +27,7 @@ import ru.dinis.docs.service.interfaces.SubdivService;
 import ru.dinis.docs.service.interfaces.TaskServaice;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -42,11 +45,19 @@ public class Main {
     public static void main(String[] args) {
         EmployeeService employeeService = new EmployeeServiceImpl();
         ObjectMapper mapper = new ObjectMapper();
-        Employee employee = employeeService.getEmployeeById(781);
+        Employee employee = employeeService.getEmployeeById(790);
         EmployeeDto employeeDto = EmplConvDto.emplToEmplDto(employee);
         String json = null;
+        Set<TaskDto> tasks = new HashSet<>();
+
+        for (Task task : employeeDto.getInstructions()) {
+            TaskDto temp = ConverterDto.taskTotaskDto(task);
+            temp.setPerformers(null);
+            tasks.add(temp);
+        }
+
         try {
-            json = mapper.writeValueAsString(employeeDto);
+            json = mapper.writeValueAsString(tasks);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

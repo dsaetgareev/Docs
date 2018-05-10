@@ -52,17 +52,46 @@ public class TaskRestService {
         return json;
     }
 
+    @GET
+    @Produces("application/json")
+    @Path("empl/author/{id}")
+    public String getInstuctions(@PathParam("id") int id) {
+        ObjectMapper mapper = new ObjectMapper();
+        Employee employee = this.employeeService.getEmployeeById(id);
+
+        EmployeeDto employeeDto = EmplConvDto.emplToEmplDto(employee);
+        employeeDto.setSubdivision(null);
+        String json = null;
+        Set<TaskDto> tasks = new HashSet<>();
+
+        for (Task task : employeeDto.getInstructions()) {
+            TaskDto temp = ConverterDto.taskTotaskDto(task);
+            temp.setPerformers(null);
+            tasks.add(temp);
+        }
+
+        try {
+            json = mapper.writeValueAsString(tasks);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        logger.info(json);
+        return json;
+    }
+
     @POST
     @Path("/add")
     @Consumes(value={"text/xml", "application/json"})
     public void addTask(String object) {
         ObjectMapper mapper = new ObjectMapper();
+        TaskDto taskDto = null;
         Task task = null;
         try {
-            task = mapper.readValue(object, Task.class);
+            taskDto = mapper.readValue(object, TaskDto.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        task = ConverterDto.taskDtoToTask(taskDto);
         this.taskServaice.addTask(task);
     }
 
